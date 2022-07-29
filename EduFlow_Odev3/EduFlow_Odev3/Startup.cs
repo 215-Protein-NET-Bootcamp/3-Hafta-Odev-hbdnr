@@ -1,16 +1,12 @@
+using EduFlow_Odev3.DbProvider;
+using EduFlow_Odev3.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EduFlow_Odev3
 {
@@ -32,6 +28,14 @@ namespace EduFlow_Odev3
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "EduFlow_Odev3", Version = "v1" });
             });
+
+
+            services.AddSingleton<IDapperDbProvider, DapperDbProvider>();
+            services.AddSingleton<IAccountRepository, AccountRepository>();
+            services.AddSingleton<IPersonRepository, PersonRepository>();
+
+            services.AddEntityFrameworkNpgsql().AddDbContext<PatikaDbContext>(opt =>
+                opt.UseNpgsql(Configuration.GetConnectionString("PostgreSqlConnection")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
